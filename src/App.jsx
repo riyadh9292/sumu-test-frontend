@@ -370,7 +370,7 @@ function App() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   console.log(sectors, "sectors");
   const getSectors = async () => {
-    const res = await axios.get(`http://localhost:4000/get-sectors`);
+    const res = await axios.get(`https://sumu-test.onrender.com/get-sectors`);
     console.log(res?.data, "res");
     setAllSectors(res?.data);
   };
