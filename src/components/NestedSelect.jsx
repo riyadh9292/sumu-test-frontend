@@ -97,14 +97,15 @@ const getTreeItemsFromData = (treeItems) => {
 //   );
 // };
 
-export default function DataTreeView({ setAllSectors, treeItems }) {
-  console.log(treeItems, "treeItems");
+export default function DataTreeView({ setAllSectors, treeItems, selected }) {
+  console.log(selected, "selected");
   return (
     <TreeView
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
-      // multiSelect
+      multiSelect
       onNodeSelect={(_, nodeIds) => setAllSectors(nodeIds)}
+      selected={selected}
     >
       {getTreeItemsFromData(treeItems)}
     </TreeView>
