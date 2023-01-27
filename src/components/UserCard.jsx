@@ -44,14 +44,14 @@ export default function UserCard({
       setLoading(false);
       return;
     }
-    if (!updatedSectors || !updatedSectors.length) {
-      toast.warn("please select your sector.");
-      setLoading(false);
-      return;
-    }
+    // if (!updatedSectors || !updatedSectors.length) {
+    //   toast.warn("please select your sector.");
+    //   setLoading(false);
+    //   return;
+    // }
     const res = await axios.patch(`https://sumu-test.onrender.com/user/${id}`, {
       name: updatedName,
-      sectors: updatedSectors,
+      sectors: updatedSectors || sectors,
       agreeToTerms: updatedAgreeToTerms,
       sectorName: updatedSectorName,
     });
