@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 import DataTreeView from "./components/NestedSelect";
 import { v4 as uuidv4 } from "uuid";
-import { FormControlLabel, TextField } from "@mui/material";
+import { CircularProgress, FormControlLabel, TextField } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import UserCard from "./components/UserCard";
@@ -372,6 +372,8 @@ function App() {
   const [sectors, setsectors] = useState("");
   const [allSectors, setAllSectors] = useState([]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sectorName, setSectorName] = useState("");
   // console.log(sectors, "sectors");
   const getSectors = async () => {
     const res = await axios.get(`https://sumu-test.onrender.com/get-sectors`);
@@ -388,16 +390,21 @@ function App() {
   };
 
   const handleSave = async () => {
+    setLoading(true);
+
     if (!name) {
       toast.warn("please add a name");
+      setLoading(false);
       return;
     }
     if (!agreeToTerms) {
       toast.warn("please agree to the terms and conditions.");
+      setLoading(false);
       return;
     }
-    if (!sectors || !sectors.length) {
+    if (!sectors || !sectors?.length) {
       toast.warn("please select your sector.");
+      setLoading(false);
       return;
     }
     const formData = new FormData();
@@ -407,12 +414,16 @@ function App() {
     const res = await axios.post("https://sumu-test.onrender.com/user/", {
       name,
       sectors,
+      sectorName,
       agreeToTerms,
     });
     if (res.data.status === "Saved") {
       getAllUsers();
+      toast.success("Added successfully.");
+      setLoading(false);
     }
-    console.log(res, "res");
+    setLoading(false);
+    // console.log(res, "res");
 
     // .then(function (response) {
     //   console.log(response, "after save");
@@ -432,6 +443,7 @@ function App() {
     console.log(res);
     if (res?.status == 200) {
       getAllUsers();
+      toast.success("Deleted successfully.");
     }
   };
 
@@ -446,28 +458,35 @@ function App() {
     <div className="App">
       <ToastContainer />
       <div className="">
-        <h1>List of all users</h1>
+        <h1 className="text-[#646cff] font-extrabold py-2 px-10 text-center">
+          List of all users
+        </h1>
         <div className="w-full flex gap-10 flex-wrap">
-          {allUsers.length &&
-            allUsers?.map((user) => {
-              return (
-                <div key={user?.id} className="">
-                  <UserCard
-                    id={user?._id}
-                    name={user?.name}
-                    sectors={user?.sectors}
-                    agreeToTerms={user?.agreeToTerms}
-                    handleDelete={handleDelete}
-                    treeItems={allSectors}
-                    getAllUsers={getAllUsers}
-                  />
-                </div>
-              );
-            })}
+          {allUsers?.map((user) => {
+            return (
+              <div key={user?.id} className="">
+                <UserCard
+                  id={user?._id}
+                  name={user?.name}
+                  sectors={user?.sectors}
+                  sectorName={user?.sectorName}
+                  agreeToTerms={user?.agreeToTerms}
+                  handleDelete={handleDelete}
+                  treeItems={allSectors}
+                  getAllUsers={getAllUsers}
+                />
+              </div>
+            );
+          })}
+          {!allUsers.length && (
+            <p className="text-center text-red-700 text-3xl mx-auto">
+              No user Found
+            </p>
+          )}
         </div>
       </div>
       {/* <ControlledTreeView /> */}
-      <h1 className="text-[#646cff] font-extrabold">
+      <h1 className="text-[#646cff] font-extrabold py-2 px-10 text-center">
         Please enter your name and pick the Sectors you are currently involved
         in.
       </h1>
@@ -483,7 +502,11 @@ function App() {
         <p className="text-base font-extrabold text-[#646cff]">
           Select your sector
         </p>
-        <DataTreeView setAllSectors={setsectors} treeItems={allSectors} />
+        <DataTreeView
+          setSectorName={setSectorName}
+          setAllSectors={setsectors}
+          treeItems={allSectors}
+        />
         <p className="text-xs text-[#787878]">
           use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for multiple select
         </p>
@@ -502,9 +525,9 @@ function App() {
         <button
           type="submit"
           onClick={handleSave}
-          className="bg-green-800 text-white px-6 py-2.5 border border-gray-300 rounded"
+          className="bg-green-800 text-white h-[50px] overflow-hidden px-6 py-2.5 border border-gray-300 rounded"
         >
-          Save
+          {loading ? <CircularProgress color="inherit" /> : "Save"}
         </button>
       </div>
 
