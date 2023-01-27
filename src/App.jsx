@@ -7,6 +7,8 @@ import { FormControlLabel, TextField } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import UserCard from "./components/UserCard";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // export const sectors = [
 //   {
@@ -386,11 +388,23 @@ function App() {
   };
 
   const handleSave = async () => {
+    if (!name) {
+      toast.warn("please add a name");
+      return;
+    }
+    if (!agreeToTerms) {
+      toast.warn("please agree to the terms and conditions.");
+      return;
+    }
+    if (!sectors || !sectors.length) {
+      toast.warn("please select your sector.");
+      return;
+    }
     const formData = new FormData();
     formData.append("name", name);
     formData.append("sectors", sectors);
     formData.append("agreeToTerms", agreeToTerms);
-    const res = await axios.post("http://localhost:4000/user/", {
+    const res = await axios.post("https://sumu-test.onrender.com/user/", {
       name,
       sectors,
       agreeToTerms,
@@ -409,12 +423,12 @@ function App() {
   };
 
   const getAllUsers = async () => {
-    const res = await axios.get("http://localhost:4000/user/");
+    const res = await axios.get("https://sumu-test.onrender.com/user/");
     setAllUsers(res?.data?.users);
     console.log(res);
   };
   const handleDelete = async (id) => {
-    const res = await axios.delete(`http://localhost:4000/user/${id}`);
+    const res = await axios.delete(`https://sumu-test.onrender.com/user/${id}`);
     console.log(res);
     if (res?.status == 200) {
       getAllUsers();
@@ -430,6 +444,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <div className="">
         <h1>List of all users</h1>
         <div className="w-full flex gap-10 flex-wrap">
@@ -452,11 +467,11 @@ function App() {
         </div>
       </div>
       {/* <ControlledTreeView /> */}
-      <h1>
+      <h1 className="text-[#646cff] font-extrabold">
         Please enter your name and pick the Sectors you are currently involved
         in.
       </h1>
-      <div className="w-fit mx-auto">
+      <div className="w-fit mx-auto mt-10 p-4 border-4 border-gray-300 rounded">
         <div className="">
           <TextField
             helperText="Please enter your name"
@@ -465,6 +480,9 @@ function App() {
             onChange={handleName}
           />
         </div>
+        <p className="text-base font-extrabold text-[#646cff]">
+          Select your sector
+        </p>
         <DataTreeView setAllSectors={setsectors} treeItems={allSectors} />
         <p className="text-xs text-[#787878]">
           use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> for multiple select

@@ -72,3 +72,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.Mui-selected {
+  background: #646cff !important;
+  color: whitesmoke !important;
+}

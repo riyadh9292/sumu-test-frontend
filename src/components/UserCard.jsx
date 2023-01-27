@@ -19,7 +19,7 @@ export default function UserCard({
   const [updatedAgreeToTerms, setUpdatedAgreeToTerms] = useState(agreeToTerms);
 
   const updateUser = async (id) => {
-    const res = await axios.patch(`http://localhost:4000/user/${id}`, {
+    const res = await axios.patch(`https://sumu-test.onrender.com/user/${id}`, {
       name: updatedName,
       sectors: updatedSectors,
       agreeToTerms: updatedAgreeToTerms,
