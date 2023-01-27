@@ -132,14 +132,18 @@ export default function UserCard({
           </div>
         </div>
       ) : (
-        <div className="">
-          <p>{name}</p>
+        <div className="p-2">
+          <div className="flex items-center gap-4 min-h-[100px]">
+            <p className="pt-1 text-green-800 ">Name:</p>
+            <p className="text-xl font-extrabold">{name}</p>
+          </div>
+
           <p className="pt-1 text-green-800 ">Sectors:</p>
           <p>
             {sectorName || "sector name"}
             {sectors?.length > 1 && "& more"}
           </p>
-          <p>{agreeToTerms}</p>
+          <p className="min-h-[100px]">{agreeToTerms}</p>
           <div className="flex items-center justify-between gap-1">
             <button
               onClick={() => setEnableUpdate(true)}
